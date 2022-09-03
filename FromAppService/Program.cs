@@ -1,3 +1,6 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -34,6 +37,24 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapGet("/keyVaultSecretWithSystemAssignedManagedIdentity", () =>
+{
+    //En este caso en nuestro Azure App Service tenemos habilitado la system-assigned managed identity y no
+    //tenemos ninguna user-assigned managed identity asociado al App Service.
+    var credential = new DefaultAzureCredential();
+
+    //Con esta credential ya debemos poder acceder a KeyVault
+    var kvSecretClient = new SecretClient(
+        vaultUri: new Uri("https://jcdemokeyvault.vault.azure.net/"),
+        credential: credential);
+
+    KeyVaultSecret secret = kvSecretClient.GetSecret("secret-name");
+
+    return secret.Value;
+})
+.WithName("GetKeyVaultSecretWithSystemAssignedManagedIdentity");
+
 
 app.Run();
 
