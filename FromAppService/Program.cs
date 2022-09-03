@@ -42,7 +42,17 @@ app.MapGet("/keyVaultSecretWithSystemAssignedManagedIdentity", () =>
 {
     //En este caso en nuestro Azure App Service tenemos habilitado la system-assigned managed identity y no
     //tenemos ninguna user-assigned managed identity asociado al App Service.
-    var credential = new DefaultAzureCredential();
+    var credential = new DefaultAzureCredential(options: new DefaultAzureCredentialOptions
+    {
+        ExcludeAzureCliCredential = true,
+        ExcludeAzurePowerShellCredential = true,
+        ExcludeEnvironmentCredential = true,
+        ExcludeInteractiveBrowserCredential = true,
+        ExcludeSharedTokenCacheCredential = true,
+        ExcludeVisualStudioCodeCredential = true,
+        ExcludeVisualStudioCredential = true
+        //only allow managed identity
+    });
 
     //Con esta credential ya debemos poder acceder a KeyVault
     var kvSecretClient = new SecretClient(
