@@ -43,6 +43,7 @@ KeyVaultSecret secret = kvSecretClient.GetSecret("secret-name");
 return secret.Value;
 ```
 
+*It´s important to give to the system-assigned managed identity the correct access. You have to ensure what is the access configuration and, if you select a _vault access policy_ you have to set the permissions of the system-assigned managed identity on the _Access policies_ tab but, if you select _RBAC_ as the access option you have to set the permissions of the system-assigned managed identity on the _IAM_ tab (Role assigmnent)*
 
 You can found more information of the services that´s been used:
 * Azure.Identity
